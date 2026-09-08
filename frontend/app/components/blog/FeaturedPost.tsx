@@ -26,8 +26,9 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
               src={post.featured_image}
               alt={post.title}
               fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 800px"
+              sizes="(max-width: 640px) 95vw, (max-width: 1024px) 90vw, 55vw"
               className="featured-img object-cover"
+              quality={65}
               priority
             />
           ) : (

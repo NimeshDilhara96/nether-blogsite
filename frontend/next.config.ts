@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
         pathname: '/storage/v1/object/public/**',
       },
     ],
+    // Modern formats: WebP/AVIF auto-conversion
+    formats: ['image/avif', 'image/webp'],
+  },
+  // Optimize package imports to reduce bundle size
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@tiptap/react', '@tiptap/starter-kit'],
   },
 };
 

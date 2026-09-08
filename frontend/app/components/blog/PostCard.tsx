@@ -28,8 +28,9 @@ export default function PostCard({ post }: PostCardProps) {
               src={post.featured_image}
               alt={post.title}
               fill
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 400px"
+              sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 280px"
               className="object-cover transition-transform duration-500 hover:scale-105"
+              quality={60}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">No Image</div>

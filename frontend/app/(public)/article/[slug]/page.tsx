@@ -74,8 +74,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 src={post.featured_image}
                 alt={post.title}
                 fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 768px"
+                sizes="(max-width: 640px) 95vw, (max-width: 1024px) 85vw, 768px"
                 className="object-cover"
+                quality={70}
                 priority
               />
             </div>
