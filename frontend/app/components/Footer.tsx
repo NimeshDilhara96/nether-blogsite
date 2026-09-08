@@ -56,13 +56,13 @@ export default function Footer() {
               <h3 className="font-extrabold text-[14px] text-black dark:text-white">Follow us</h3>
               <div className="flex items-center gap-3">
                 {/* Facebook */}
-                <SocialIcon href="#" svg={<path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3.61l.39-4H14V7a1 1 0 011-1h3z" />} />
+                <SocialIcon href="#" label="Facebook" svg={<path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3.61l.39-4H14V7a1 1 0 011-1h3z" />} />
                 {/* Instagram */}
-                <SocialIcon href="#" svg={<><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></>} />
+                <SocialIcon href="#" label="Instagram" svg={<><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></>} />
                 {/* X / Twitter */}
-                <SocialIcon href="#" svg={<><line x1="4" y1="4" x2="20" y2="20" /><line x1="20" y1="4" x2="4" y2="20" /></>} />
+                <SocialIcon href="#" label="X (Twitter)" svg={<><line x1="4" y1="4" x2="20" y2="20" /><line x1="20" y1="4" x2="4" y2="20" /></>} />
                 {/* LinkedIn */}
-                <SocialIcon href="#" svg={<><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></>} />
+                <SocialIcon href="#" label="LinkedIn" svg={<><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></>} />
               </div>
             </div>
           </div>
@@ -87,10 +87,24 @@ export default function Footer() {
   );
 }
 
-function SocialIcon({ href, svg }: { href: string; svg: React.ReactNode }) {
+function SocialIcon({ href, svg, label }: { href: string; svg: React.ReactNode; label: string }) {
   return (
-    <a href={href} className="text-gray-400 dark:text-gray-300 hover:text-[#4595ff] dark:hover:text-[#4595ff] transition-colors">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <a
+      href={href}
+      aria-label={`Follow us on ${label}`}
+      className="text-gray-400 dark:text-gray-300 hover:text-[#4595ff] dark:hover:text-[#4595ff] transition-colors"
+    >
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
         {svg}
       </svg>
     </a>
