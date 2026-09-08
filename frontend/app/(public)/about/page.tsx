@@ -29,7 +29,7 @@ export default function AboutPage() {
         <section className="mb-10">
           <h2 className="text-xl font-extrabold mb-3 text-black dark:text-white">Our Mission</h2>
           <p className="text-gray-600 dark:text-gray-400 text-base leading-relaxed">
-            To make complex topics simple, entertaining, and accessible to everyone — whether you're a
+            To make complex topics simple, entertaining, and accessible to everyone — whether you&apos;re a
             first-time reader or a seasoned enthusiast. Every article is written with care, accuracy, and
             a genuine curiosity about the world.
           </p>

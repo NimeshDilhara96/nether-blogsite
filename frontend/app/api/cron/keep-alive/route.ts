@@ -8,7 +8,7 @@ export async function GET() {
     const supabase = await createClient()
     
     // Database එක active තියාගන්න පොඩි query එකක් run කරනවා
-    const { data, error } = await supabase.from('categories').select('id').limit(1)
+    const { error } = await supabase.from('categories').select('id').limit(1)
 
     if (error) {
       console.error('Keep-alive failed:', error.message)
@@ -24,7 +24,7 @@ export async function GET() {
       time: new Date().toISOString() 
     })
     
-  } catch (err) {
+  } catch {
     return NextResponse.json(
       { status: 'error', message: 'Internal Server Error' },
       { status: 500 }

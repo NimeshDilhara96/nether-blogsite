@@ -3,13 +3,23 @@ import Link from 'next/link'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import { revalidatePath } from 'next/cache'
 
+type AdminPost = {
+  id: string
+  title: string
+  status: 'draft' | 'published'
+  published_at: string | null
+  category: { name: string } | { name: string }[] | null
+}
+
 export default async function AdminPostsPage() {
   const supabase = await createClient()
   
-  const { data: posts } = await supabase
+  const { data } = await supabase
     .from('posts')
     .select('id, title, status, published_at, category:categories(name)')
     .order('created_at', { ascending: false })
+
+  const posts = (data ?? []) as unknown as AdminPost[]
 
   return (
     <div>
@@ -94,7 +104,7 @@ export default async function AdminPostsPage() {
                   </span>
                 </td>
                 <td style={{ padding: '14px 16px', fontSize: '13px', color: '#71717a' }}>
-                  {Array.isArray(post.category) ? post.category[0]?.name : (post.category as any)?.name || '—'}
+                  {Array.isArray(post.category) ? post.category[0]?.name : post.category?.name || '—'}
                 </td>
                 <td style={{ padding: '14px 16px', fontSize: '13px', color: '#52525b' }}>
                   {post.published_at

@@ -4,6 +4,7 @@ import PostCard from '@/app/components/blog/PostCard';
 import Pagination from '@/app/components/blog/Pagination';
 import Sidebar from '@/app/components/blog/Sidebar';
 import AdBox from '@/app/components/blog/AdBox';
+import type { PostCardPost } from '@/app/components/blog/PostCard';
 import { createClient } from '@/lib/supabase/server';
 
 export const revalidate = 3600; // ISR
@@ -37,7 +38,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         <div className="flex-1 min-w-0 w-full">
           <h2 className="text-[#4595ff] text-sm font-bold mb-3">Latest</h2>
           
-          {featuredPost && <FeaturedPost post={featuredPost as any} />}
+          {featuredPost && <FeaturedPost post={featuredPost as unknown as PostCardPost & { excerpt: string }} />}
 
           <hr className="border-gray-200 dark:border-zinc-800 my-8" />
 
@@ -51,7 +52,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
           {/* Regular Posts Grid: 1-col mobile, 2-col sm+ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             {regularPosts.map((post) => (
-              <PostCard key={post.id} post={post as any} />
+              <PostCard key={post.id} post={post as unknown as PostCardPost} />
             ))}
             
             {(!posts || posts.length === 0) && (

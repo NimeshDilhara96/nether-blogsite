@@ -1,31 +1,30 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const router = useRouter();
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() =>
+    typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+  );
   const [lang, setLang] = useState<"EN" | "AR">("EN");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (document.documentElement.classList.contains("dark")) {
-      setDarkMode(true);
-    }
-  }, []);
-
-  // Auto-focus input and clear query when overlay opens/closes
-  useEffect(() => {
     if (searchOpen) {
       setTimeout(() => inputRef.current?.focus(), 50);
-    } else {
-      setSearchQuery("");
     }
   }, [searchOpen]);
+
+  const closeSearch = () => {
+    setSearchOpen(false);
+    setSearchQuery("");
+  };
 
   const toggleDark = () => {
     setDarkMode((prev) => {
@@ -46,7 +45,7 @@ export default function Navbar() {
   const handleSearch = () => {
     const q = searchQuery.trim();
     if (!q) return;
-    setSearchOpen(false);
+    closeSearch();
     router.push(`/search?q=${encodeURIComponent(q)}`);
   };
 
@@ -61,12 +60,12 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-1 sm:gap-3">
 
           {/* Logo */}
-          <a href="/" className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0" aria-label="Nether X Home">
+          <Link href="/" className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0" aria-label="Nether X Home">
             <Image src="/N.png" alt="Nether X N icon" width={42} height={42}
               className="rounded object-contain w-7 h-7 sm:w-[42px] sm:h-[42px]" style={{ width: "auto" }} priority />
             <Image src="/Nether-X.png" alt="Nether X" width={130} height={28}
               className="w-auto object-contain h-[18px] sm:h-7" priority />
-          </a>
+          </Link>
 
           {/* Desktop nav links */}
           <ul className="hidden lg:flex items-center gap-1 list-none m-0 p-0">
@@ -76,10 +75,10 @@ export default function Navbar() {
               { label: "About",      href: "/about" },
             ].map(({ label, href }) => (
               <li key={label}>
-                <a href={href}
+                <Link href={href}
                   className="text-white/90 no-underline text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-white/20 hover:text-white transition-colors duration-150">
                   {label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -112,10 +111,10 @@ export default function Navbar() {
             </button>
 
             {/* Subscribe */}
-            <a href="/about#newsletter"
+            <Link href="/about#newsletter"
               className="flex items-center bg-transparent border border-white text-white rounded-xl px-2.5 py-1 sm:px-[18px] sm:py-[7px] text-[11px] sm:text-[15px] font-bold cursor-pointer hover:bg-white hover:text-[#4595ff] transition-colors duration-150 flex-shrink-0 whitespace-nowrap">
               Subscribe
-            </a>
+            </Link>
           </div>
         </div>
       </nav>
@@ -125,7 +124,7 @@ export default function Navbar() {
         <div
           className="fixed inset-0 bg-black/60 z-[200] flex items-start justify-center pt-16 sm:pt-24 px-4"
           role="dialog" aria-modal="true" aria-label="Search"
-          onClick={(e) => e.target === e.currentTarget && setSearchOpen(false)}
+          onClick={(e) => e.target === e.currentTarget && closeSearch()}
         >
           <div className="bg-white dark:bg-[#1a1a1a] rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden">
             {/* Input row */}
@@ -142,7 +141,7 @@ export default function Navbar() {
                 className="flex-1 border-none outline-none text-base text-gray-900 dark:text-white bg-transparent placeholder:text-gray-400"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleSearch();
-                  if (e.key === "Escape") setSearchOpen(false);
+                  if (e.key === "Escape") closeSearch();
                 }}
               />
               {searchQuery && (
@@ -159,7 +158,7 @@ export default function Navbar() {
                 Press <kbd className="bg-gray-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-[11px] font-mono">Enter</kbd> to search
               </span>
               <div className="flex gap-2">
-                <button onClick={() => setSearchOpen(false)}
+                <button onClick={closeSearch}
                   className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 px-3 py-1.5 rounded-lg transition-colors">
                   Cancel
                 </button>

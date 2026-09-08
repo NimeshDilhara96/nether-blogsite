@@ -2,6 +2,7 @@ import React from 'react';
 import { createClient } from '@/lib/supabase/server';
 import PostCard from '@/app/components/blog/PostCard';
 import Link from 'next/link';
+import type { PostCardPost } from '@/app/components/blog/PostCard';
 
 interface SearchPageProps {
   searchParams: Promise<{ q?: string }>;
@@ -20,7 +21,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   const supabase = await createClient();
 
-  let posts: any[] = [];
+  let posts: PostCardPost[] = [];
 
   if (query) {
     // Full-text search across title and excerpt using Postgres ilike
@@ -32,7 +33,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       .order('published_at', { ascending: false })
       .limit(24);
 
-    posts = data ?? [];
+    posts = (data ?? []) as unknown as PostCardPost[];
   }
 
   return (

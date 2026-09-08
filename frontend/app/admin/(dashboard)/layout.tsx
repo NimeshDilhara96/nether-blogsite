@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { LogOut, FileText, LayoutGrid } from 'lucide-react'
+import { LogOut, FileText } from 'lucide-react'
 
 export default async function AdminDashboardLayout({
   children,

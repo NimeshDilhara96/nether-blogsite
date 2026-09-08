@@ -2,16 +2,19 @@ import React from 'react';
 import { EyeIcon } from '../Icons';
 import Link from 'next/link';
 
+export interface PostCardPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  featured_image: string;
+  published_at: string;
+  views: number;
+  category: { name: string } | null;
+}
+
 interface PostCardProps {
-  post: {
-    id: string;
-    title: string;
-    slug: string;
-    featured_image: string;
-    published_at: string;
-    views: number;
-    category: { name: string } | null;
-  }
+  post: PostCardPost;
 }
 
 export default function PostCard({ post }: PostCardProps) {

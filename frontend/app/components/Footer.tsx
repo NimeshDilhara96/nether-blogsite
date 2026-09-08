@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const linkCls = "text-[12px] font-medium text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors";
 
@@ -11,16 +12,16 @@ export default function Footer() {
           
           {/* Column 1: Logo and tagline */}
           <div className="flex flex-col gap-4 max-w-xs">
-            <a href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <Image src="/N.png" alt="Nether X N icon" width={32} height={32} className="rounded object-contain" />
               <Image src="/Nether-X.png" alt="Nether X" width={110} height={24} className="object-contain dark:invert" />
-            </a>
+            </Link>
             <p className="text-[13px] text-gray-800 dark:text-gray-300 leading-relaxed font-medium">
               Your go-to source for the latest in tech, gaming, movies, and more.
             </p>
-            <a href="/about#newsletter" className="border-[1.5px] border-[#4595ff] text-[#4595ff] font-extrabold text-[12px] py-2 px-5 rounded-[10px] w-fit hover:bg-[#4595ff] hover:text-white transition-colors mt-2">
+              <Link href="/about#newsletter" className="border-[1.5px] border-[#4595ff] text-[#4595ff] font-extrabold text-[12px] py-2 px-5 rounded-[10px] w-fit hover:bg-[#4595ff] hover:text-white transition-colors mt-2">
               Subscribe free
-            </a>
+              </Link>
           </div>
 
           {/* Links Section */}
@@ -29,25 +30,25 @@ export default function Footer() {
             {/* Explore */}
             <div className="flex flex-col gap-2.5">
               <h3 className="font-extrabold text-[14px] text-black dark:text-white mb-1.5">Explore</h3>
-              <a href="/"            className={linkCls}>Home</a>
-              <a href="/about"       className={linkCls}>About</a>
-              <a href="/categories"  className={linkCls}>Categories</a>
+              <Link href="/"            className={linkCls}>Home</Link>
+              <Link href="/about"       className={linkCls}>About</Link>
+              <Link href="/categories"  className={linkCls}>Categories</Link>
             </div>
 
             {/* Topics */}
             <div className="flex flex-col gap-2.5">
               <h3 className="font-extrabold text-[14px] text-black dark:text-white mb-1.5">Topics</h3>
-              <a href="/category/news"        className={linkCls}>News</a>
-              <a href="/category/movies"      className={linkCls}>Movies</a>
-              <a href="/category/games"       className={linkCls}>Games</a>
-              <a href="/category/technology"  className={linkCls}>Technology</a>
+              <Link href="/category/news"        className={linkCls}>News</Link>
+              <Link href="/category/movies"      className={linkCls}>Movies</Link>
+              <Link href="/category/games"       className={linkCls}>Games</Link>
+              <Link href="/category/technology"  className={linkCls}>Technology</Link>
             </div>
 
             {/* Legal */}
             <div className="flex flex-col gap-2.5">
               <h3 className="font-extrabold text-[14px] text-black dark:text-white mb-1.5">Legal</h3>
-              <a href="/privacy-policy" className={linkCls}>Privacy Policy</a>
-              <a href="/terms"          className={linkCls}>Terms of Service</a>
+              <Link href="/privacy-policy" className={linkCls}>Privacy Policy</Link>
+              <Link href="/terms"          className={linkCls}>Terms of Service</Link>
             </div>
 
             {/* Follow us */}
@@ -75,10 +76,10 @@ export default function Footer() {
             © 2026 Nether X. All Rights Reserved.
           </p>
           <div className="flex flex-wrap gap-4">
-            <a href="/"               className="text-[12px] text-gray-700 dark:text-gray-400 font-medium hover:text-black dark:hover:text-white transition-colors">Home</a>
-            <a href="/about"          className="text-[12px] text-gray-700 dark:text-gray-400 font-medium hover:text-black dark:hover:text-white transition-colors">About</a>
-            <a href="/privacy-policy" className="text-[12px] text-gray-700 dark:text-gray-400 font-medium hover:text-black dark:hover:text-white transition-colors">Privacy Policy</a>
-            <a href="/terms"          className="text-[12px] text-gray-700 dark:text-gray-400 font-medium hover:text-black dark:hover:text-white transition-colors">Terms of Service</a>
+            <Link href="/"               className="text-[12px] text-gray-700 dark:text-gray-400 font-medium hover:text-black dark:hover:text-white transition-colors">Home</Link>
+            <Link href="/about"          className="text-[12px] text-gray-700 dark:text-gray-400 font-medium hover:text-black dark:hover:text-white transition-colors">About</Link>
+            <Link href="/privacy-policy" className="text-[12px] text-gray-700 dark:text-gray-400 font-medium hover:text-black dark:hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms"          className="text-[12px] text-gray-700 dark:text-gray-400 font-medium hover:text-black dark:hover:text-white transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

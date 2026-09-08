@@ -5,6 +5,7 @@ import PostCard from '@/app/components/blog/PostCard';
 import Pagination from '@/app/components/blog/Pagination';
 import Sidebar from '@/app/components/blog/Sidebar';
 import Link from 'next/link';
+import type { PostCardPost } from '@/app/components/blog/PostCard';
 
 export const revalidate = 3600;
 
@@ -103,7 +104,7 @@ export default async function CategoryPage({
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
                 {posts.map((post) => (
-                  <PostCard key={post.id} post={post as any} />
+                  <PostCard key={post.id} post={post as unknown as PostCardPost} />
                 ))}
               </div>
               <Pagination currentPage={currentPage} totalPages={totalPages} />

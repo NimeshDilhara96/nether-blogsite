@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
@@ -17,12 +20,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -37,7 +34,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-[#f4f9ff] dark:bg-[#0a0a0a] text-black dark:text-white" style={{ margin: 0, padding: 0, fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>
+      <body className={`${inter.className} bg-[#f4f9ff] dark:bg-[#0a0a0a] text-black dark:text-white`}>
         {children}
       </body>
     </html>

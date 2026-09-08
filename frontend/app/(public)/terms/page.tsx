@@ -21,7 +21,7 @@ export default function TermsPage() {
           <article className="prose dark:prose-invert prose-base sm:prose-lg max-w-none w-full min-w-0 text-gray-800 dark:text-gray-300 leading-relaxed">
             <h2>1. Acceptance of Terms</h2>
             <p>
-              By accessing and using Nether X ("the Site"), you agree to be bound by these Terms of Service.
+              By accessing and using Nether X (&quot;the Site&quot;), you agree to be bound by these Terms of Service.
               If you do not agree, please do not use the Site.
             </p>
 

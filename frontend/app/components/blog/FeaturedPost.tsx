@@ -1,6 +1,7 @@
 import React from 'react';
 import { EyeIcon } from '../Icons';
 import Link from 'next/link';
+import type { PostCardPost } from './PostCard';
 
 const imgHoverStyle = `
   .featured-img { transition: transform 0.5s cubic-bezier(.25,.8,.25,1); }
@@ -8,16 +9,7 @@ const imgHoverStyle = `
 `;
 
 interface FeaturedPostProps {
-  post: {
-    id: string;
-    title: string;
-    slug: string;
-    excerpt: string;
-    featured_image: string;
-    published_at: string;
-    views: number;
-    category: { name: string } | null;
-  }
+  post: PostCardPost & { excerpt: string };
 }
 
 export default function FeaturedPost({ post }: FeaturedPostProps) {

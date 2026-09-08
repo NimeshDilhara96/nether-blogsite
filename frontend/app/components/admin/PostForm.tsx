@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import TiptapEditor from './TiptapEditor'
@@ -12,7 +12,16 @@ type Category = { id: string; name: string }
 
 interface PostFormProps {
   categories: Category[]
-  initialData?: any
+  initialData?: {
+    title?: string
+    slug?: string
+    excerpt?: string
+    content?: string
+    category_id?: string
+    status?: 'draft' | 'published'
+    featured_image?: string
+    published_at?: string | null
+  }
   postId?: string
 }
 
@@ -61,12 +70,6 @@ export default function PostForm({ categories, initialData, postId }: PostFormPr
   const [loading, setLoading] = useState(false)
   const [uploadingImg, setUploadingImg] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!postId && title) {
-      setSlug(title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''))
-    }
-  }, [title, postId])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -174,7 +177,13 @@ export default function PostForm({ categories, initialData, postId }: PostFormPr
             <input
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                const nextTitle = e.target.value
+                setTitle(nextTitle)
+                if (!postId) {
+                  setSlug(nextTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''))
+                }
+              }}
               placeholder="Article title..."
               required
               style={{ ...inputStyle, fontSize: '16px', fontWeight: 500 }}
