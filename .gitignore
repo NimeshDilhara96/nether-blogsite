@@ -1,0 +1,15 @@
+node_modules/
+.next/
+out/
+build/
+coverage/
+.env*
+!.env.example
+.vercel/
+*.tsbuildinfo
+*.log
+*.pem
+.DS_Store
+
+frontend/.git/
+frontend/.git-frontend-backup/

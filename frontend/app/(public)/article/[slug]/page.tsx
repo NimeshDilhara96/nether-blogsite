@@ -1,0 +1,134 @@
+import React from 'react';
+import { EyeIcon } from '@/app/components/Icons';
+import { createClient } from '@/lib/supabase/server';
+import { notFound } from 'next/navigation';
+import ViewTracker from '@/app/components/blog/ViewTracker';
+import AdBox from '@/app/components/blog/AdBox';
+
+export const revalidate = 3600; // ISR
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const supabase = await createClient();
+  const { data: post } = await supabase
+    .from('posts')
+    .select('title, excerpt, featured_image')
+    .eq('slug', slug)
+    .single();
+
+  if (!post) {
+    return { title: 'Not Found' };
+  }
+
+  return {
+    title: post.title,
+    description: post.excerpt || post.title,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt || post.title,
+      images: post.featured_image ? [post.featured_image] : [],
+    },
+  };
+}
+
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const supabase = await createClient();
+  
+  // Also check if user is admin, because admins can view drafts
+  const { data: { user } } = await supabase.auth.getUser();
+  let isAdmin = false;
+  if (user) {
+    const { data: admin } = await supabase.from('admins').select('*').eq('user_id', user.id).single();
+    isAdmin = !!admin;
+  }
+
+  const query = supabase
+    .from('posts')
+    .select('*, category:categories(name)')
+    .eq('slug', slug);
+
+  if (!isAdmin) {
+    query.eq('status', 'published');
+  }
+
+  const { data: post } = await query.single();
+
+  if (!post) {
+    notFound();
+  }
+
+  return (
+    <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-200">
+      <ViewTracker slug={slug} />
+      <main className="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 flex flex-col">
+        
+        {/* Main Content Area */}
+        <div className="w-full">
+          
+          {/* Article Cover Image */}
+          {post.featured_image && (
+            <div className="w-full rounded-2xl overflow-hidden bg-gray-200 dark:bg-zinc-900 mb-8" style={{ aspectRatio: '16/9' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={post.featured_image}
+                alt={post.title}
+                className="w-full h-full object-cover block"
+              />
+            </div>
+          )}
+
+          {/* Like Section (Static for now) */}
+          <div className="flex items-center gap-4 mb-10 px-2 sm:px-6">
+            <button className="flex items-center gap-2 border border-gray-300 dark:border-zinc-700 rounded-full px-4 py-1.5 text-sm font-semibold hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              Like 10
+            </button>
+            <span className="text-sm text-gray-500 font-medium hidden sm:inline">Enjoyed this story? Give it a like.</span>
+          </div>
+
+          {/* Content Container with curved top border */}
+          <div className="border-t-[3px] border-[#4595ff] rounded-t-[32px] sm:rounded-t-[40px] pt-8 sm:pt-10 px-0 sm:px-4">
+            
+            {/* Badges */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-semibold text-gray-500 dark:text-gray-400 mb-6">
+              <span className="bg-[#4595ff] text-white px-3 py-1 rounded-[6px] tracking-widest font-extrabold uppercase text-[10px]">
+                {post.category?.name || 'Uncategorized'}
+              </span>
+              <span>{post.published_at ? new Date(post.published_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Draft'}</span>
+              <span className="flex items-center gap-1.5">
+                <EyeIcon /> {post.views || 0} views
+              </span>
+            </div>
+
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight tracking-tight text-black dark:text-white break-words">
+              {post.title}
+            </h1>
+
+            {/* Author */}
+            <p className="text-gray-500 text-sm font-medium mb-10">
+              By <span className="text-[#4595ff] cursor-pointer hover:underline">Nether X</span>
+            </p>
+
+            {/* Ad 4 — Leaderboard before article content */}
+            <div className="w-full flex justify-center mb-8">
+              <AdBox slot={4} size="leaderboard" className="w-full" />
+            </div>
+
+            {/* Article Content */}
+            <article 
+              className="prose dark:prose-invert prose-base sm:prose-lg max-w-none w-full min-w-0 text-gray-800 dark:text-gray-300 font-medium leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: post.content || '' }}
+            />
+
+            {/* Ad 5 — Large rectangle after article content */}
+            <div className="w-full flex justify-center mt-10">
+              <AdBox slot={5} size="largeRectangle" className="w-full" />
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
