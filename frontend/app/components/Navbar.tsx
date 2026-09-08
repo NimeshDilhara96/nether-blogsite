@@ -32,9 +32,12 @@ export default function Navbar() {
       if (isDark) {
         document.documentElement.classList.add("dark");
         localStorage.theme = "dark";
+        // Cookie එකේත් save කරනවා — server-side rendering සඳහා
+        document.cookie = "theme=dark; path=/; max-age=31536000; SameSite=Lax";
       } else {
         document.documentElement.classList.remove("dark");
         localStorage.theme = "light";
+        document.cookie = "theme=light; path=/; max-age=31536000; SameSite=Lax";
       }
       return isDark;
     });

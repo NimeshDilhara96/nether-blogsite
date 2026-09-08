@@ -29,10 +29,23 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark')
+                // 1. Cookie check (server-side render compat)
+                var cookie = document.cookie.split(';').find(function(c){ return c.trim().startsWith('theme='); });
+                var cookieTheme = cookie ? cookie.trim().split('=')[1] : null;
+
+                // 2. Fallback: localStorage
+                var theme = cookieTheme || localStorage.theme;
+
+                // 3. Fallback: OS preference
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
                 } else {
-                  document.documentElement.classList.remove('dark')
+                  document.documentElement.classList.remove('dark');
+                }
+
+                // cookie නැතිනම් sync කරමු
+                if (!cookieTheme && theme) {
+                  document.cookie = 'theme=' + theme + '; path=/; max-age=31536000; SameSite=Lax';
                 }
               } catch (_) {}
             `,
