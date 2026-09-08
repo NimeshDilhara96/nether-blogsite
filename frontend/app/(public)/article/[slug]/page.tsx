@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import ViewTracker from '@/app/components/blog/ViewTracker';
 import AdBox from '@/app/components/blog/AdBox';
+import Image from 'next/image';
 
 export const revalidate = 3600; // ISR
 
@@ -68,12 +69,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           
           {/* Article Cover Image */}
           {post.featured_image && (
-            <div className="w-full rounded-2xl overflow-hidden bg-gray-200 dark:bg-zinc-900 mb-8" style={{ aspectRatio: '16/9' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+            <div className="w-full rounded-2xl overflow-hidden bg-gray-200 dark:bg-zinc-900 mb-8 relative" style={{ aspectRatio: '16/9' }}>
+              <Image
                 src={post.featured_image}
                 alt={post.title}
-                className="w-full h-full object-cover block"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 768px"
+                className="object-cover"
+                priority
               />
             </div>
           )}

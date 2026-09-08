@@ -1,6 +1,7 @@
 import React from 'react';
 import { EyeIcon } from '../Icons';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export interface PostCardPost {
   id: string;
@@ -21,13 +22,14 @@ export default function PostCard({ post }: PostCardProps) {
   return (
     <div className="border border-gray-200 dark:border-zinc-800 rounded-2xl p-2.5 flex flex-col h-full">
       <Link href={`/article/${post.slug}`} className="block">
-        <div className="w-full rounded-xl overflow-hidden bg-gray-200 dark:bg-zinc-900 mb-3" style={{ aspectRatio: '4/3' }}>
+        <div className="w-full rounded-xl overflow-hidden bg-gray-200 dark:bg-zinc-900 mb-3 relative" style={{ aspectRatio: '4/3' }}>
           {post.featured_image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={post.featured_image}
               alt={post.title}
-              className="w-full h-full object-cover block transition-transform duration-500 hover:scale-105"
+              fill
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 400px"
+              className="object-cover transition-transform duration-500 hover:scale-105"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">No Image</div>

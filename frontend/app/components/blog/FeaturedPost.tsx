@@ -1,6 +1,7 @@
 import React from 'react';
 import { EyeIcon } from '../Icons';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { PostCardPost } from './PostCard';
 
 const imgHoverStyle = `
@@ -19,13 +20,15 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
     <div className="mb-8">
       <style>{imgHoverStyle}</style>
       <Link href={`/article/${post.slug}`} className="block">
-        <div className="w-full rounded-2xl overflow-hidden bg-gray-200 dark:bg-zinc-900 mb-4" style={{ aspectRatio: '16/9' }}>
+        <div className="w-full rounded-2xl overflow-hidden bg-gray-200 dark:bg-zinc-900 mb-4 relative" style={{ aspectRatio: '16/9' }}>
           {post.featured_image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={post.featured_image}
               alt={post.title}
-              className="featured-img w-full h-full object-cover block"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 800px"
+              className="featured-img object-cover"
+              priority
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">No Image</div>

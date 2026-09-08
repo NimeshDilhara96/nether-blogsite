@@ -3,6 +3,7 @@ import { EyeIcon } from '../Icons';
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import AdBox from './AdBox';
+import Image from 'next/image';
 
 export default async function Sidebar() {
   const supabase = await createClient();
@@ -34,8 +35,13 @@ export default async function Sidebar() {
             <Link key={post.id} href={`/article/${post.slug}`} className="flex items-center gap-4 group">
               <div className="w-[70px] h-[70px] bg-[#d9d9d9] dark:bg-zinc-800 rounded-[10px] border border-gray-600 dark:border-transparent flex-shrink-0 group-hover:opacity-80 transition-opacity overflow-hidden relative">
                 {post.featured_image && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={post.featured_image} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <Image
+                    src={post.featured_image}
+                    alt={post.title}
+                    fill
+                    sizes="70px"
+                    className="object-cover"
+                  />
                 )}
               </div>
               <div className="flex flex-col justify-center">
