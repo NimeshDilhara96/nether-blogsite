@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 
 const inter = Inter({ 
   subsets: ["latin"],
-  display: "swap",      // font load වෙනකල් fallback font show කරනවා (FCP improve)
-  preload: true,        // critical font pre-fetch කරනවා
+  display: "swap",
+  preload: true,
   variable: "--font-inter",
 });
 
@@ -17,35 +18,33 @@ export const metadata: Metadata = {
   description: "Nether X — A blog about technology, software and development.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Server-side theme read — flash නැතිව correct theme apply කරනවා
+  const cookieStore = await cookies();
+  const theme = cookieStore.get("theme")?.value;
+  const isDark = theme === "dark";
+
   return (
-    <html lang="en">
+    <html lang="en" className={isDark ? "dark" : ""}>
       <head>
+        {/* Fallback: cookie නැති users සඳහා (first visit / localStorage sync) */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                // 1. Cookie check (server-side render compat)
                 var cookie = document.cookie.split(';').find(function(c){ return c.trim().startsWith('theme='); });
                 var cookieTheme = cookie ? cookie.trim().split('=')[1] : null;
-
-                // 2. Fallback: localStorage
                 var theme = cookieTheme || localStorage.theme;
-
-                // 3. Fallback: OS preference
                 if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                   document.documentElement.classList.add('dark');
-                } else {
+                  if (!cookieTheme) document.cookie = 'theme=dark; path=/; max-age=31536000; SameSite=Lax';
+                } else if (theme === 'light') {
                   document.documentElement.classList.remove('dark');
-                }
-
-                // cookie නැතිනම් sync කරමු
-                if (!cookieTheme && theme) {
-                  document.cookie = 'theme=' + theme + '; path=/; max-age=31536000; SameSite=Lax';
+                  if (!cookieTheme) document.cookie = 'theme=light; path=/; max-age=31536000; SameSite=Lax';
                 }
               } catch (_) {}
             `,
@@ -57,4 +56,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+}
