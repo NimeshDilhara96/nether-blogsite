@@ -3,10 +3,30 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import TiptapEditor from './TiptapEditor'
+import dynamic from 'next/dynamic'
 import { Save, Upload, ArrowLeft } from 'lucide-react'
 import { revalidateBlog } from '@/app/actions'
 import Link from 'next/link'
+
+// TipTap editor admin pages ලාට only load — public pages ලාට bundle නොවෙනවා
+const TiptapEditor = dynamic(() => import('./TiptapEditor'), {
+  ssr: false,
+  loading: () => (
+    <div style={{
+      border: '1px solid #27272a',
+      borderRadius: '8px',
+      backgroundColor: '#111111',
+      height: '320px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#52525b',
+      fontSize: '13px',
+    }}>
+      Loading editor...
+    </div>
+  ),
+})
 
 type Category = { id: string; name: string }
 
@@ -181,7 +201,18 @@ export default function PostForm({ categories, initialData, postId }: PostFormPr
                 const nextTitle = e.target.value
                 setTitle(nextTitle)
                 if (!postId) {
-                  setSlug(nextTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''))
+                  // SEO-safe slug: normalize unicode, strip diacritics, lowercase, replace spaces/specials with hyphens
+                  const generated = nextTitle
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '') // strip diacritics
+                    .replace(/[^\x00-\x7F]/g, '')    // strip non-ASCII (e.g. Sinhala)
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9\s-]/g, '')    // keep alphanumeric, spaces, hyphens
+                    .replace(/\s+/g, '-')             // spaces → hyphens
+                    .replace(/-+/g, '-')              // collapse multiple hyphens
+                    .replace(/(^-|-$)/g, '')          // trim leading/trailing hyphens
+                  setSlug(generated)
                 }
               }}
               placeholder="Article title..."

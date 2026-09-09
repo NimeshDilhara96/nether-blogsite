@@ -62,7 +62,7 @@ export default function TermsPage() {
             <h2>7. Contact</h2>
             <p>
               For questions about these Terms, please contact us at{' '}
-              <a href="mailto:legal@netherx.com">legal@netherx.com</a>.
+              <a href="mailto:legal@netherx.mommentx.space">legal@netherx.mommentx.space</a>.
             </p>
           </article>
         </div>

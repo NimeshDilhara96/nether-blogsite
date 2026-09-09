@@ -63,7 +63,7 @@ export default function PrivacyPolicyPage() {
             <h2>7. Contact</h2>
             <p>
               If you have any questions about this Privacy Policy, please contact us at{' '}
-              <a href="mailto:privacy@netherx.com">privacy@netherx.com</a>.
+              <a href="mailto:privacy@netherx.mommentx.space">privacy@netherx.mommentx.space</a>.
             </p>
           </article>
         </div>

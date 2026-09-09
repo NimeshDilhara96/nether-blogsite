@@ -21,10 +21,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return { title: 'Not Found' };
   }
 
+  const url = `https://netherx.mommentx.space/article/${slug}`;
+
   return {
     title: post.title,
     description: post.excerpt || post.title,
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
+      title: post.title,
+      description: post.excerpt || post.title,
+      url,
+      type: 'article',
+      images: post.featured_image
+        ? [{ url: post.featured_image, width: 1200, height: 630, alt: post.title }]
+        : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
       title: post.title,
       description: post.excerpt || post.title,
       images: post.featured_image ? [post.featured_image] : [],

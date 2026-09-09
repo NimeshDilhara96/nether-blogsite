@@ -11,11 +11,25 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://netherx.mommentx.space"),
   title: {
     default: "Nether X",
     template: "%s | Nether X",
   },
   description: "Nether X — A blog about technology, software and development.",
+  openGraph: {
+    siteName: "Nether X",
+    type: "website",
+    locale: "en_US",
+    url: "https://netherx.mommentx.space",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@NetherX",
+  },
+  verification: {
+    google: "MPKtElHbSG4pCpKJqhAXIDSqeu1FfaagHWVTPWr4daM",
+  },
 };
 
 export default async function RootLayout({
