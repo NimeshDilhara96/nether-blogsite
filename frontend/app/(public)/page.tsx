@@ -13,13 +13,19 @@ const BASE_URL = 'https://netherx.mommentx.space';
 
 export const metadata = {
   title: 'Nether X — Movies, Games, Tech & Reviews',
-  description: 'Nether X is your go-to blog for movies, games, technology, film reviews and more.',
+  description: 'Nether X is your go-to blog for honest, in-depth coverage of movies, games, technology, film reviews, and more. Discover the latest articles curated for enthusiasts.',
   alternates: { canonical: BASE_URL },
   openGraph: {
     title: 'Nether X — Movies, Games, Tech & Reviews',
-    description: 'Nether X is your go-to blog for movies, games, technology, film reviews and more.',
+    description: 'Honest, in-depth coverage of movies, games, technology, and film reviews. Discover the latest articles on Nether X.',
     url: BASE_URL,
     type: 'website',
+    siteName: 'Nether X',
+  },
+  twitter: {
+    card: 'summary_large_image' as const,
+    title: 'Nether X — Movies, Games, Tech & Reviews',
+    description: 'Honest, in-depth coverage of movies, games, technology, and film reviews.',
   },
 };
 

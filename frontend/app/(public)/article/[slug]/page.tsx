@@ -9,6 +9,17 @@ import Image from 'next/image';
 export const revalidate = 3600; // ISR
 
 const BASE_URL = 'https://netherx.mommentx.space';
+const SITE_NAME = 'Nether X';
+
+/**
+ * Images are already 1200×630 JPEG (resized at upload time via Canvas)
+ * so we can use the direct Supabase storage URL as the OG image.
+ */
+
+/** Truncate a string to maxLen, appending … if cut */
+function truncate(str: string, maxLen: number): string {
+  return str.length <= maxLen ? str : str.slice(0, maxLen - 1) + '…'
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -25,26 +36,37 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const url = `${BASE_URL}/article/${slug}`;
 
+  // Keep title under 60 chars for Google / social platforms
+  const ogTitle = truncate(post.title, 60);
+
+  // Ensure description is 120–160 chars
+  const rawDesc = post.excerpt || post.title;
+  const description = rawDesc.length < 120
+    ? `${rawDesc} — Read more on Nether X, your go-to blog for movies, games, technology and reviews.`
+    : truncate(rawDesc, 160);
+
+  // OG image: already 1200×630 from upload (no transform needed)
+  const ogImage = post.featured_image ?? null;
+
   return {
     title: post.title,
-    description: post.excerpt || post.title,
-    alternates: {
-      canonical: url,
-    },
+    description,
+    alternates: { canonical: url },
     openGraph: {
-      title: post.title,
-      description: post.excerpt || post.title,
+      title: ogTitle,
+      description,
       url,
       type: 'article',
-      images: post.featured_image
-        ? [{ url: post.featured_image, width: 1200, height: 630, alt: post.title }]
+      siteName: SITE_NAME,
+      images: ogImage
+        ? [{ url: ogImage, width: 1200, height: 630, alt: ogTitle }]
         : [],
     },
     twitter: {
       card: 'summary_large_image',
-      title: post.title,
-      description: post.excerpt || post.title,
-      images: post.featured_image ? [post.featured_image] : [],
+      title: ogTitle,
+      description,
+      images: ogImage ? [ogImage] : [],
     },
   };
 }

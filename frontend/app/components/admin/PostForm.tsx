@@ -91,17 +91,55 @@ export default function PostForm({ categories, initialData, postId }: PostFormPr
   const [uploadingImg, setUploadingImg] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  /** Resize any image to 1200×630 cover crop, returns a JPEG Blob */
+  function resizeImageTo1200x630(file: File): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const img = new window.Image()
+      img.onload = () => {
+        const TARGET_W = 1200
+        const TARGET_H = 630
+        const canvas = document.createElement('canvas')
+        canvas.width = TARGET_W
+        canvas.height = TARGET_H
+        const ctx = canvas.getContext('2d')!
+        // Cover crop: scale to fill 1200×630, centre the crop
+        const scale = Math.max(TARGET_W / img.width, TARGET_H / img.height)
+        const scaledW = img.width * scale
+        const scaledH = img.height * scale
+        const offsetX = (TARGET_W - scaledW) / 2
+        const offsetY = (TARGET_H - scaledH) / 2
+        ctx.drawImage(img, offsetX, offsetY, scaledW, scaledH)
+        canvas.toBlob(
+          (blob) => blob ? resolve(blob) : reject(new Error('Canvas toBlob failed')),
+          'image/jpeg',
+          0.85,
+        )
+      }
+      img.onerror = reject
+      img.src = URL.createObjectURL(file)
+    })
+  }
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
     setUploadingImg(true)
-    const fileExt = file.name.split('.').pop()
-    const fileName = `featured-${Date.now()}.${fileExt}`
-    const { error: uploadError } = await supabase.storage.from('blog-images').upload(fileName, file)
-    if (uploadError) { setError(uploadError.message); setUploadingImg(false); return }
-    const { data } = supabase.storage.from('blog-images').getPublicUrl(fileName)
-    setFeaturedImage(data.publicUrl)
-    setUploadingImg(false)
+    try {
+      // Resize + compress to 1200×630 JPEG using Canvas — works on free Supabase plan
+      const compressed = await resizeImageTo1200x630(file)
+      const fileName = `featured-${Date.now()}.jpg`
+      const { error: uploadError } = await supabase.storage
+        .from('blog-images')
+        .upload(fileName, compressed, { contentType: 'image/jpeg' })
+      if (uploadError) { setError(uploadError.message); return }
+      const { data } = supabase.storage.from('blog-images').getPublicUrl(fileName)
+      setFeaturedImage(data.publicUrl)
+    } catch (err) {
+      setError('Image processing failed. Please try again.')
+      console.error(err)
+    } finally {
+      setUploadingImg(false)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
