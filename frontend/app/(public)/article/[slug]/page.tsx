@@ -36,25 +36,31 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const url = `${BASE_URL}/article/${slug}`;
 
-  // Keep title under 60 chars for Google / social platforms
+  // Page title: template adds " | Nether X" (11 chars) → keep base ≤49 so total ≤60
+  const pageTitle = truncate(post.title, 49);
+
+  // OG/Twitter title: standalone, can use full 60 chars
   const ogTitle = truncate(post.title, 60);
 
-  // Ensure description is 120–160 chars
   const rawDesc = post.excerpt || post.title;
-  const description = rawDesc.length < 120
-    ? `${rawDesc} — Read more on Nether X, your go-to blog for movies, games, technology and reviews.`
-    : truncate(rawDesc, 160);
+  const suffix = ' — Read more on Nether X, your go-to blog for movies, games, technology and reviews.';
+
+  // HTML <meta description>: 120–160 chars
+  const metaDesc = truncate(rawDesc.length < 80 ? rawDesc + suffix : rawDesc, 160);
+
+  // OG/Twitter description: ≤125 chars (mobile social previews truncate here)
+  const ogDesc = truncate(rawDesc.length < 40 ? rawDesc + suffix : rawDesc, 125);
 
   // OG image: already 1200×630 from upload (no transform needed)
   const ogImage = post.featured_image ?? null;
 
   return {
-    title: post.title,
-    description,
+    title: pageTitle,
+    description: metaDesc,
     alternates: { canonical: url },
     openGraph: {
       title: ogTitle,
-      description,
+      description: ogDesc,
       url,
       type: 'article',
       siteName: SITE_NAME,
@@ -65,7 +71,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     twitter: {
       card: 'summary_large_image',
       title: ogTitle,
-      description,
+      description: ogDesc,
       images: ogImage ? [ogImage] : [],
     },
   };
