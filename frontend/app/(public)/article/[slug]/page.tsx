@@ -81,7 +81,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   // JSON-LD Article structured data — enables Google rich results
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: post.title,
     description: post.excerpt || post.title,
     url: articleUrl,
@@ -115,12 +115,29 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     },
   };
 
+  // BreadcrumbList JSON-LD — shows "Home > Category > Title" in Google results
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+      ...(post.category?.name
+        ? [{ '@type': 'ListItem', position: 2, name: post.category.name, item: `${BASE_URL}/category/${slug}` }]
+        : []),
+      { '@type': 'ListItem', position: post.category?.name ? 3 : 2, name: post.title, item: articleUrl },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-200">
       {/* JSON-LD structured data for Google rich results */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       <ViewTracker slug={slug} />

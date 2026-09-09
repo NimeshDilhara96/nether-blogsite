@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { LogOut, FileText } from 'lucide-react'
+import PingGoogleButton from '@/app/components/admin/PingGoogleButton'
 
 export default async function AdminDashboardLayout({
   children,
@@ -84,6 +85,12 @@ export default async function AdminDashboardLayout({
             <FileText size={16} style={{ color: '#6366f1' }} />
             Posts
           </Link>
+
+          {/* SEO Section */}
+          <div style={{ fontSize: '10px', fontWeight: 600, color: '#52525b', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '0 8px', marginTop: '16px', marginBottom: '6px' }}>
+            SEO
+          </div>
+          <PingGoogleButton />
         </nav>
 
         {/* User */}

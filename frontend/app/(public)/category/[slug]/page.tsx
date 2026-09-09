@@ -20,9 +20,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!category) return { title: 'Not Found' };
 
+  const url = `https://netherx.mommentx.space/category/${slug}`;
+
   return {
     title: `${category.name} — Nether X`,
-    description: `Browse all ${category.name} articles on Nether X.`,
+    description: `Browse all ${category.name} articles on Nether X — movies, games, tech, film reviews and more.`,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${category.name} — Nether X`,
+      description: `Browse all ${category.name} articles on Nether X.`,
+      url,
+      type: 'website',
+    },
   };
 }
 
@@ -62,8 +71,25 @@ export default async function CategoryPage({
 
   const totalPages = Math.ceil((count || 0) / postsPerPage);
 
+  const BASE_URL = 'https://netherx.mommentx.space';
+
+  // BreadcrumbList JSON-LD — shows breadcrumbs in Google search results
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Categories', item: `${BASE_URL}/categories` },
+      { '@type': 'ListItem', position: 3, name: category.name, item: `${BASE_URL}/category/${slug}` },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-200">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 flex flex-col lg:flex-row gap-8 lg:gap-12 xl:gap-16">
 
         {/* Main content */}

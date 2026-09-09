@@ -9,6 +9,20 @@ import { createClient } from '@/lib/supabase/server';
 
 export const revalidate = 3600; // ISR
 
+const BASE_URL = 'https://netherx.mommentx.space';
+
+export const metadata = {
+  title: 'Nether X — Movies, Games, Tech & Reviews',
+  description: 'Nether X is your go-to blog for movies, games, technology, film reviews and more.',
+  alternates: { canonical: BASE_URL },
+  openGraph: {
+    title: 'Nether X — Movies, Games, Tech & Reviews',
+    description: 'Nether X is your go-to blog for movies, games, technology, film reviews and more.',
+    url: BASE_URL,
+    type: 'website',
+  },
+};
+
 export default async function HomePage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page } = await searchParams;
   const currentPage = parseInt(page || '1', 10);
@@ -31,8 +45,29 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const featuredPost = isFirstPage && posts && posts.length > 0 ? posts[0] : null;
   const regularPosts = isFirstPage && posts && posts.length > 1 ? posts.slice(1) : posts || [];
 
+  // WebSite JSON-LD — helps Google identify the site + enables Sitelinks search box
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Nether X',
+    url: BASE_URL,
+    description: 'Nether X is your go-to blog for movies, games, technology, film reviews and more.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${BASE_URL}/search?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-200">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
       <main className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 flex flex-col lg:flex-row gap-8 lg:gap-12 xl:gap-16">
         {/* Main Content Area */}
         <div className="flex-1 min-w-0 w-full">
