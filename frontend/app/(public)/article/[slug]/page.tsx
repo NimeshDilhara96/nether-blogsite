@@ -8,6 +8,8 @@ import Image from 'next/image';
 
 export const revalidate = 3600; // ISR
 
+const BASE_URL = 'https://netherx.mommentx.space';
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
@@ -21,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return { title: 'Not Found' };
   }
 
-  const url = `https://netherx.mommentx.space/article/${slug}`;
+  const url = `${BASE_URL}/article/${slug}`;
 
   return {
     title: post.title,
@@ -74,8 +76,53 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     notFound();
   }
 
+  const articleUrl = `${BASE_URL}/article/${slug}`;
+
+  // JSON-LD Article structured data — enables Google rich results
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt || post.title,
+    url: articleUrl,
+    image: post.featured_image
+      ? {
+          '@type': 'ImageObject',
+          url: post.featured_image,
+          width: 1200,
+          height: 630,
+        }
+      : undefined,
+    datePublished: post.published_at ?? post.created_at,
+    dateModified: post.updated_at ?? post.published_at ?? post.created_at,
+    author: {
+      '@type': 'Organization',
+      name: 'Nether X',
+      url: BASE_URL,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Nether X',
+      url: BASE_URL,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${BASE_URL}/Nether-X.png`,
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': articleUrl,
+    },
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-black dark:text-white transition-colors duration-200">
+      {/* JSON-LD structured data for Google rich results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <ViewTracker slug={slug} />
       <main className="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 flex flex-col">
         
