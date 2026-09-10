@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
+import Script from "next/script";
 import "./globals.css";
 
 const inter = Inter({ 
@@ -49,7 +50,9 @@ export default async function RootLayout({
     <html lang="en" className={isDark ? "dark" : ""}>
       <head>
         {/* Fallback: cookie නැති users සඳහා (first visit / localStorage sync) */}
-        <script
+        <Script
+          id="theme-script"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               try {
@@ -63,7 +66,7 @@ export default async function RootLayout({
                   document.documentElement.classList.remove('dark');
                   if (!cookieTheme) document.cookie = 'theme=light; path=/; max-age=31536000; SameSite=Lax';
                 }
-              } catch (_) {}
+              } catch (e) {}
             `,
           }}
         />

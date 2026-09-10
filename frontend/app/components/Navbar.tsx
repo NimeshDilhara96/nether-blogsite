@@ -7,13 +7,17 @@ import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const router = useRouter();
-  const [darkMode, setDarkMode] = useState(() =>
-    typeof document !== "undefined" && document.documentElement.classList.contains("dark")
-  );
+  const [mounted, setMounted] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   const [lang, setLang] = useState<"EN" | "AR">("EN");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+    setDarkMode(document.documentElement.classList.contains("dark"));
+  }, []);
 
   useEffect(() => {
     if (searchOpen) {
@@ -105,11 +109,11 @@ export default function Navbar() {
 
             {/* Dark mode toggle */}
             <button id="navbar-darkmode-btn"
-              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label={mounted && darkMode ? "Switch to light mode" : "Switch to dark mode"}
               onClick={toggleDark}
               className="bg-transparent border border-white rounded-full w-7 h-7 sm:w-[38px] sm:h-[38px] flex items-center justify-center cursor-pointer hover:bg-white/15 transition-colors duration-150 flex-shrink-0">
               <div className="scale-75 sm:scale-100 flex items-center justify-center">
-                {darkMode ? <SunIcon /> : <MoonIcon />}
+                {mounted ? (darkMode ? <SunIcon /> : <MoonIcon />) : <div className="w-[17px] h-[17px]" />}
               </div>
             </button>
 

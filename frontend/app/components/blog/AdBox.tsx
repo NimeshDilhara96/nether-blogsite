@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
+
 /**
  * AdBox — placeholder ad unit, individually numbered by slot.
  *
@@ -42,12 +44,21 @@ interface AdBoxProps {
 
 export default function AdBox({ slot, size = 'rectangle', className = '' }: AdBoxProps) {
   const { w, h, label } = dimensions[size]
+  const adRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    // Dynamically inject the Monetag script to avoid React client rendering errors
+    if (adRef.current && !adRef.current.querySelector('script')) {
+      const script = document.createElement('script')
+      script.src = 'https://5gvci.com/act/files/tag.min.js?z=11765206'
+      script.async = true
+      script.setAttribute('data-cfasync', 'false')
+      adRef.current.appendChild(script)
+    }
+  }, [])
 
   return (
-    <a
-      href="https://omg10.com/4/11765161"
-      target="_blank"
-      rel="noopener noreferrer"
+    <div
       className={`flex flex-col items-center justify-center rounded-xl overflow-hidden ${className}`}
       data-ad-slot={slot}
       aria-label={`Advertisement slot ${slot}`}
@@ -57,7 +68,6 @@ export default function AdBox({ slot, size = 'rectangle', className = '' }: AdBo
         maxWidth: '100%',
         border: '1.5px dashed #3f3f46',
         backgroundColor: 'transparent',
-        textDecoration: 'none',
         backgroundImage: `repeating-linear-gradient(
           45deg,
           rgba(100,116,139,0.04) 0px,
@@ -97,15 +107,10 @@ export default function AdBox({ slot, size = 'rectangle', className = '' }: AdBo
         </span>
       </div>
 
-      {/* Placeholder body — replace this div with your <ins> AdSense tag */}
-      <div style={{ textAlign: 'center', padding: '0 16px 12px' }}>
-        <span style={{ fontSize: '11px', color: '#52525b', fontWeight: 500 }}>
-          {label}
-        </span>
-        <p style={{ fontSize: '10px', color: '#71717a', marginTop: '4px' }}>
-          Sponsored Advertisement
-        </p>
+      {/* Monetag Ad Script Container */}
+      <div ref={adRef} style={{ textAlign: 'center', width: '100%', display: 'flex', justifyContent: 'center' }}>
+        {/* Script is injected here via useEffect */}
       </div>
-    </a>
+    </div>
   )
 }
