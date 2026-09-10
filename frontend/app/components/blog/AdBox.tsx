@@ -1,6 +1,4 @@
-'use client'
 
-import { useEffect, useRef } from 'react'
 
 /**
  * AdBox — placeholder ad unit, individually numbered by slot.
@@ -43,73 +41,27 @@ interface AdBoxProps {
 }
 
 export default function AdBox({ slot, size = 'rectangle', className = '' }: AdBoxProps) {
-  const { w, h, label } = dimensions[size]
-  const adRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    // Dynamically inject the Monetag script to avoid React client rendering errors
-    if (adRef.current && !adRef.current.querySelector('script')) {
-      const script = document.createElement('script')
-      script.src = 'https://5gvci.com/act/files/tag.min.js?z=11765206'
-      script.async = true
-      script.setAttribute('data-cfasync', 'false')
-      adRef.current.appendChild(script)
-    }
-  }, [])
-
   return (
     <div
-      className={`flex flex-col items-center justify-center rounded-xl overflow-hidden ${className}`}
+      className={`flex items-center justify-center my-6 overflow-hidden ${className}`}
       data-ad-slot={slot}
-      aria-label={`Advertisement slot ${slot}`}
+      aria-label="Advertisement"
       style={{
-        width: w,
-        minHeight: h,
+        width: '100%',
         maxWidth: '100%',
-        border: '1.5px dashed #3f3f46',
-        backgroundColor: 'transparent',
-        backgroundImage: `repeating-linear-gradient(
-          45deg,
-          rgba(100,116,139,0.04) 0px,
-          rgba(100,116,139,0.04) 1px,
-          transparent 1px,
-          transparent 12px
-        )`,
+        margin: '1.5rem auto',
       }}
     >
-      {/* Top label row */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-          borderBottom: '1px solid #3f3f46',
-          padding: '5px 12px',
-          marginBottom: '10px',
-          boxSizing: 'border-box',
-        }}
-      >
-        <span style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#71717a' }}>
-          Advertisement
-        </span>
-        {/* Slot badge */}
-        <span
-          style={{
-            fontSize: '9px', fontWeight: 700, letterSpacing: '0.05em',
-            color: '#fff',
-            backgroundColor: '#4595ff',
-            borderRadius: '4px',
-            padding: '1px 7px',
-          }}
-        >
-          Ad {slot}
-        </span>
-      </div>
-
-      {/* Monetag Ad Script Container */}
-      <div ref={adRef} style={{ textAlign: 'center', width: '100%', display: 'flex', justifyContent: 'center' }}>
-        {/* Script is injected here via useEffect */}
+      {/* Adsterra 300x250 Banner Ad */}
+      <div style={{ textAlign: 'center', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <iframe
+          title="Advertisement"
+          srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;padding:0;overflow:hidden;display:flex;justify-content:center;align-items:center;background:transparent;}</style></head><body><script type="text/javascript">atOptions = {'key' : '4bd30cd2632ba50a7d282d4875f124a7','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};</script><script type="text/javascript" src="https://www.highrevenueformat.com/4bd30cd2632ba50a7d282d4875f124a7/invoke.js"></script></body></html>`}
+          width="300"
+          height="250"
+          style={{ border: 'none', overflow: 'hidden', maxWidth: '100%' }}
+          scrolling="no"
+        />
       </div>
     </div>
   )

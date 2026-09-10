@@ -31,9 +31,6 @@ export const metadata: Metadata = {
   verification: {
     google: "MPKtElHbSG4pCpKJqhAXIDSqeu1FfaagHWVTPWr4daM",
   },
-  other: {
-    monetag: "0c6dc9567d69cc1c6ba6c20614086e37",
-  },
 };
 
 export default async function RootLayout({
