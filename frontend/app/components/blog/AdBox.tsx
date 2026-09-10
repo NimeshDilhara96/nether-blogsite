@@ -44,7 +44,10 @@ export default function AdBox({ slot, size = 'rectangle', className = '' }: AdBo
   const { w, h, label } = dimensions[size]
 
   return (
-    <div
+    <a
+      href="https://omg10.com/4/11765161"
+      target="_blank"
+      rel="noopener noreferrer"
       className={`flex flex-col items-center justify-center rounded-xl overflow-hidden ${className}`}
       data-ad-slot={slot}
       aria-label={`Advertisement slot ${slot}`}
@@ -54,6 +57,7 @@ export default function AdBox({ slot, size = 'rectangle', className = '' }: AdBo
         maxWidth: '100%',
         border: '1.5px dashed #3f3f46',
         backgroundColor: 'transparent',
+        textDecoration: 'none',
         backgroundImage: `repeating-linear-gradient(
           45deg,
           rgba(100,116,139,0.04) 0px,
@@ -99,9 +103,9 @@ export default function AdBox({ slot, size = 'rectangle', className = '' }: AdBo
           {label}
         </span>
         <p style={{ fontSize: '10px', color: '#71717a', marginTop: '4px' }}>
-          Your ad here · slot {slot}
+          Sponsored Advertisement
         </p>
       </div>
-    </div>
+    </a>
   )
 }
