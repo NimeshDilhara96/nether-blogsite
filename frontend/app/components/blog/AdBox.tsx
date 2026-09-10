@@ -1,4 +1,6 @@
+'use client'
 
+import { useEffect, useRef } from 'react'
 
 /**
  * AdBox — placeholder ad unit, individually numbered by slot.
@@ -42,15 +44,26 @@ interface AdBoxProps {
 }
 
 export default function AdBox({ slot, size = 'rectangle', format = 'auto', className = '' }: AdBoxProps) {
+  const adRef = useRef<HTMLDivElement>(null)
+
   // Use Native Banner for wide/horizontal slots (leaderboard, largeRectangle) and 300x250 for sidebar/rectangle
   const isNative = format === 'native' || (format === 'auto' && (size === 'leaderboard' || size === 'largeRectangle' || size === 'inline'))
 
-  if (isNative) {
-    const iframeHeight = size === 'largeRectangle' ? '250px' : '120px'
+  useEffect(() => {
+    // Dynamically inject the Native Banner script into its container
+    if (isNative && adRef.current && !adRef.current.querySelector('script')) {
+      const script = document.createElement('script')
+      script.async = true
+      script.setAttribute('data-cfasync', 'false')
+      script.src = 'https://pl31271332.profitableratecpmnetwork.com/5fa765cbd61ae4e545e18750bcf3e0e8/invoke.js'
+      adRef.current.appendChild(script)
+    }
+  }, [isNative])
 
+  if (isNative) {
     return (
       <div
-        className={`flex items-center justify-center my-6 overflow-hidden ${className}`}
+        className={`flex items-center justify-center my-6 ${className}`}
         data-ad-slot={slot}
         aria-label="Advertisement"
         style={{
@@ -59,16 +72,13 @@ export default function AdBox({ slot, size = 'rectangle', format = 'auto', class
           margin: '1.5rem auto',
         }}
       >
-        {/* Adsterra Native Banner */}
-        <div style={{ textAlign: 'center', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <iframe
-            title={`Native Ad Slot ${slot}`}
-            srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;padding:0;background:transparent;overflow:hidden;display:flex;justify-content:center;align-items:center;}#container-5fa765cbd61ae4e545e18750bcf3e0e8{width:100%;}</style></head><body><div id="container-5fa765cbd61ae4e545e18750bcf3e0e8"></div><script async="async" data-cfasync="false" src="https://pl31271332.profitableratecpmnetwork.com/5fa765cbd61ae4e545e18750bcf3e0e8/invoke.js"></script></body></html>`}
-            width="100%"
-            height={iframeHeight}
-            style={{ border: 'none', overflow: 'hidden', width: '100%', minHeight: iframeHeight }}
-            scrolling="no"
-          />
+        {/* Adsterra Native Banner Container */}
+        <div 
+          ref={adRef} 
+          id="container-5fa765cbd61ae4e545e18750bcf3e0e8" 
+          style={{ width: '100%', minHeight: '120px' }}
+        >
+          {/* Script injected via useEffect */}
         </div>
       </div>
     )
