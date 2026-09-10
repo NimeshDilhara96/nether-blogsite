@@ -237,9 +237,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               dangerouslySetInnerHTML={{ __html: post.content || '' }}
             />
 
-            {/* Ad 5 — Large rectangle after article content */}
+            {/* Ad 5 — Medium rectangle (300x250 Banner) after article content */}
             <div className="w-full flex justify-center mt-10">
-              <AdBox slot={5} size="largeRectangle" className="w-full" />
+              <AdBox slot={5} size="rectangle" />
             </div>
           </div>
         </div>

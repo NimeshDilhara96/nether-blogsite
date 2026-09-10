@@ -44,26 +44,15 @@ interface AdBoxProps {
 }
 
 export default function AdBox({ slot, size = 'rectangle', format = 'auto', className = '' }: AdBoxProps) {
-  const adRef = useRef<HTMLDivElement>(null)
-
   // Use Native Banner for wide/horizontal slots (leaderboard, largeRectangle) and 300x250 for sidebar/rectangle
   const isNative = format === 'native' || (format === 'auto' && (size === 'leaderboard' || size === 'largeRectangle' || size === 'inline'))
 
-  useEffect(() => {
-    // Dynamically inject the Native Banner script into its container
-    if (isNative && adRef.current && !adRef.current.querySelector('script')) {
-      const script = document.createElement('script')
-      script.async = true
-      script.setAttribute('data-cfasync', 'false')
-      script.src = 'https://pl31271332.profitableratecpmnetwork.com/5fa765cbd61ae4e545e18750bcf3e0e8/invoke.js'
-      adRef.current.appendChild(script)
-    }
-  }, [isNative])
-
   if (isNative) {
+    const heightClass = size === 'largeRectangle' ? 'h-[260px] md:h-[320px]' : 'h-[150px] md:h-[280px]'
+
     return (
       <div
-        className={`flex items-center justify-center my-6 ${className}`}
+        className={`flex items-center justify-center my-6 overflow-hidden ${className}`}
         data-ad-slot={slot}
         aria-label="Advertisement"
         style={{
@@ -72,13 +61,15 @@ export default function AdBox({ slot, size = 'rectangle', format = 'auto', class
           margin: '1.5rem auto',
         }}
       >
-        {/* Adsterra Native Banner Container */}
-        <div 
-          ref={adRef} 
-          id="container-5fa765cbd61ae4e545e18750bcf3e0e8" 
-          style={{ width: '100%', minHeight: '120px' }}
-        >
-          {/* Script injected via useEffect */}
+        {/* Adsterra Native Banner Container (Iframe used to prevent ID collision and React errors) */}
+        <div className={`text-center w-full flex justify-center items-center bg-white rounded-xl overflow-hidden ${heightClass}`}>
+          <iframe
+            title={`Native Ad Slot ${slot}`}
+            srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;padding:0;background:#ffffff;overflow:hidden;display:flex;justify-content:center;align-items:center;}#container-5fa765cbd61ae4e545e18750bcf3e0e8{width:100%;}</style></head><body><div id="container-5fa765cbd61ae4e545e18750bcf3e0e8"></div><script async="async" data-cfasync="false" src="https://pl31271332.profitableratecpmnetwork.com/5fa765cbd61ae4e545e18750bcf3e0e8/invoke.js"></script></body></html>`}
+            className={`w-full ${heightClass}`}
+            style={{ border: 'none', overflow: 'hidden' }}
+            scrolling="no"
+          />
         </div>
       </div>
     )
