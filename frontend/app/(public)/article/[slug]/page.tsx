@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const supabase = await createClient();
   const { data: post } = await supabase
     .from('posts')
-    .select('title, excerpt, featured_image')
+    .select('title, excerpt, featured_image, seo_title, seo_description')
     .eq('slug', slug)
     .single();
 
@@ -36,13 +36,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const url = `${BASE_URL}/article/${slug}`;
 
-  // Page title: template adds " | Nether X" (11 chars) → keep base ≤49 so total ≤60
-  const pageTitle = truncate(post.title, 49);
+  // Page title: use seo_title if set, else truncate post title to fit template
+  const pageTitle = post.seo_title
+    ? truncate(post.seo_title, 60)
+    : truncate(post.title, 49); // template adds " | Nether X" (11 chars)
 
-  // OG/Twitter title: standalone, can use full 60 chars
-  const ogTitle = truncate(post.title, 60);
+  // OG/Twitter title: standalone 60-char limit
+  const ogTitle = post.seo_title
+    ? truncate(post.seo_title, 60)
+    : truncate(post.title, 60);
 
-  const rawDesc = post.excerpt || post.title;
+  const rawDesc = post.seo_description || post.excerpt || post.title;
   const suffix = ' — Read more on Nether X, your go-to blog for movies, games, technology and reviews.';
 
   // HTML <meta description>: 120–160 chars

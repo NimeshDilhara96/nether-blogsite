@@ -41,6 +41,8 @@ interface PostFormProps {
     status?: 'draft' | 'published'
     featured_image?: string
     published_at?: string | null
+    seo_title?: string
+    seo_description?: string
   }
   postId?: string
 }
@@ -87,6 +89,8 @@ export default function PostForm({ categories, initialData, postId }: PostFormPr
   const [categoryId, setCategoryId] = useState(initialData?.category_id || (categories[0]?.id || ''))
   const [status, setStatus] = useState<'draft' | 'published'>(initialData?.status || 'draft')
   const [featuredImage, setFeaturedImage] = useState(initialData?.featured_image || '')
+  const [seoTitle, setSeoTitle] = useState(initialData?.seo_title || '')
+  const [seoDescription, setSeoDescription] = useState(initialData?.seo_description || '')
   const [loading, setLoading] = useState(false)
   const [uploadingImg, setUploadingImg] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -150,6 +154,8 @@ export default function PostForm({ categories, initialData, postId }: PostFormPr
       title, slug, excerpt, content,
       category_id: categoryId, status,
       featured_image: featuredImage,
+      seo_title: seoTitle.trim() || null,
+      seo_description: seoDescription.trim() || null,
       updated_at: new Date().toISOString(),
       ...(status === 'published' && !initialData?.published_at ? { published_at: new Date().toISOString() } : {})
     }
@@ -357,6 +363,59 @@ export default function PostForm({ categories, initialData, postId }: PostFormPr
               {uploadingImg ? 'Uploading...' : (featuredImage ? 'Change Image' : 'Upload Image')}
               <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploadingImg} />
             </label>
+          </div>
+
+          {/* SEO */}
+          <div style={card}>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#a1a1aa', marginBottom: '16px', paddingBottom: '12px', borderBottom: '1px solid #1a1a1a', display: 'flex', alignItems: 'center', gap: '7px' }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              SEO
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+
+              {/* SEO Title */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <label style={label}>SEO Title</label>
+                  <span style={{ fontSize: '11px', color: seoTitle.length > 60 ? '#ef4444' : '#52525b' }}>
+                    {seoTitle.length}/60
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  value={seoTitle}
+                  onChange={(e) => setSeoTitle(e.target.value)}
+                  placeholder={title ? `${title.slice(0, 49)}…` : 'Leave blank to auto-generate'}
+                  maxLength={60}
+                  style={{ ...inputStyle, fontSize: '13px', borderColor: seoTitle.length > 60 ? '#ef4444' : '#27272a' }}
+                  onFocus={e => (e.target.style.borderColor = '#6366f1')}
+                  onBlur={e => (e.target.style.borderColor = seoTitle.length > 60 ? '#ef4444' : '#27272a')}
+                />
+                <p style={{ fontSize: '11px', color: '#3f3f46', marginTop: '5px' }}>Google shows ~60 chars. Used as og:title too.</p>
+              </div>
+
+              {/* SEO Description */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <label style={label}>SEO Description</label>
+                  <span style={{ fontSize: '11px', color: seoDescription.length > 160 ? '#ef4444' : seoDescription.length > 125 ? '#f59e0b' : '#52525b' }}>
+                    {seoDescription.length}/160
+                  </span>
+                </div>
+                <textarea
+                  value={seoDescription}
+                  onChange={(e) => setSeoDescription(e.target.value)}
+                  placeholder="Leave blank to auto-generate from excerpt"
+                  maxLength={160}
+                  rows={3}
+                  style={{ ...inputStyle, resize: 'vertical', fontSize: '13px', borderColor: seoDescription.length > 160 ? '#ef4444' : '#27272a' }}
+                  onFocus={e => (e.target.style.borderColor = '#6366f1')}
+                  onBlur={e => (e.target.style.borderColor = seoDescription.length > 160 ? '#ef4444' : '#27272a')}
+                />
+                <p style={{ fontSize: '11px', color: '#3f3f46', marginTop: '5px' }}>120–160 chars ideal. ≤125 for social cards.</p>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
