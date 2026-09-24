@@ -226,18 +226,43 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               By <span className="text-[#4595ff] cursor-pointer hover:underline">Nether X</span>
             </p>
 
-            {/* Ad 4 — Leaderboard before article content */}
+            {/* Ad 4 — Top Banner before article content */}
             <div className="w-full flex justify-center mb-8">
-              <AdBox slot={4} size="leaderboard" className="w-full" />
+              <AdBox slot={4} size="rectangle" />
             </div>
 
-            {/* Article Content */}
-            <article 
-              className="prose dark:prose-invert prose-base sm:prose-lg max-w-none w-full min-w-0 text-gray-800 dark:text-gray-300 font-medium leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: post.content || '' }}
-            />
+            {/* Article Content - Split for Mid-Article Ad */}
+            {(() => {
+              const content = post.content || '';
+              const midPoint = Math.floor(content.length / 2);
+              const splitIndex = content.indexOf('</p>', midPoint);
+              const part1 = splitIndex !== -1 ? content.slice(0, splitIndex + 4) : content;
+              const part2 = splitIndex !== -1 ? content.slice(splitIndex + 4) : '';
 
-            {/* Ad 5 — Medium rectangle (300x250 Banner) after article content */}
+              return (
+                <>
+                  <article 
+                    className="prose dark:prose-invert prose-base sm:prose-lg max-w-none w-full min-w-0 text-gray-800 dark:text-gray-300 font-medium leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: part1 }}
+                  />
+
+                  {part2 && (
+                    <div className="w-full flex justify-center my-10">
+                      <AdBox slot={6} size="rectangle" />
+                    </div>
+                  )}
+
+                  {part2 && (
+                    <article 
+                      className="prose dark:prose-invert prose-base sm:prose-lg max-w-none w-full min-w-0 text-gray-800 dark:text-gray-300 font-medium leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: part2 }}
+                    />
+                  )}
+                </>
+              );
+            })()}
+
+            {/* Ad 5 — Bottom Banner after article content */}
             <div className="w-full flex justify-center mt-10">
               <AdBox slot={5} size="rectangle" />
             </div>
