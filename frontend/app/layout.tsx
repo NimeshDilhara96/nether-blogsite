@@ -75,6 +75,12 @@ export default async function RootLayout({
       </head>
       <body className={`${inter.className} bg-[#f4f9ff] dark:bg-[#0a0a0a] text-black dark:text-white`}>
         {children}
+        
+        {/* Adsterra Social Bar Ad */}
+        <Script 
+          src="https://pl31488739.profitableratecpmnetwork.com/77/6a/b6/776ab611058223dced44e6ce3e12f50f.js" 
+          strategy="lazyOnload" 
+        />
       </body>
     </html>
   );
